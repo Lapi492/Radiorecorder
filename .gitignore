@@ -211,3 +211,4 @@ cython_debug/
 .cursorindexingignore
 
 # Do not track recordings directory
+recordings/

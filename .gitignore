@@ -215,3 +215,7 @@ recordings/
 
 # Do not track .DS_Store
 .DS_Store
+
+# Do not include credentials and tokens 
+credentials.json
+token.pickle

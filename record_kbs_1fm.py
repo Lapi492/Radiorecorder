@@ -44,7 +44,7 @@ try:
         "-i", stream_url,
         "-c:a", "libmp3lame",
         "-q:a", "2",  # High quality MP3 (VBR)
-        "-t", "60",
+        "-t", "7200",
         output_file
     ]
     subprocess.run(ffmpeg_cmd)

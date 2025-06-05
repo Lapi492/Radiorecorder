@@ -1,10 +1,16 @@
 import time
 import subprocess
+import os
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+# Create recordings directory if it doesn't exist
+recordings_dir = "recordings"
+os.makedirs(recordings_dir, exist_ok=True)
 
 # Setup Selenium for headless Chrome on macOS
 options = Options()
@@ -28,15 +34,17 @@ try:
     stream_url = driver.execute_script("return jwplayer('kbs-social-player').getPlaylistItem().file;")
     print("Stream URL obtained:", stream_url)
 
-    # Record using ffmpeg for 2 hours (7200 seconds)
-    output_file = "kbs_1fm_recording.ts"
+    # Generate filename with current datetime
+    current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_file = os.path.join(recordings_dir, f"kbs_1fm_{current_time}.mp3")
     print(f"Starting recording to {output_file} for 2 hours...")
 
     ffmpeg_cmd = [
         "ffmpeg",
         "-i", stream_url,
-        "-c", "copy",
-        "-t", "7200",
+        "-c:a", "libmp3lame",
+        "-q:a", "2",  # High quality MP3 (VBR)
+        "-t", "60",
         output_file
     ]
     subprocess.run(ffmpeg_cmd)

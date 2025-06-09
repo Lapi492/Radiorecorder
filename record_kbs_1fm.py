@@ -1,6 +1,7 @@
 import time
 import subprocess
 import os
+import argparse
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -77,6 +78,17 @@ def upload_to_drive(file_path, folder_id=None):
 recordings_dir = "recordings"
 os.makedirs(recordings_dir, exist_ok=True)
 
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Record KBS 1FM stream')
+parser.add_argument('--duration', type=int, default=7200,
+                   help='Recording duration in seconds (default: 7200 seconds / 2 hours)')
+parser.add_argument('--url', type=str, 
+                   default='https://onair.kbs.co.kr/index.html?sname=onair&stype=live&ch_code=24&ch_type=radioList&bora=off&chat=off',
+                   help='URL of the stream (default: KBS 1FM)')
+parser.add_argument('--upload', action='store_true',
+                   help='Enable upload to Google Drive. To use this, you need to set up Google Drive API first. (default: False)')
+args = parser.parse_args()
+
 # Setup Selenium for headless Chrome on macOS
 options = Options()
 options.add_argument("--headless")
@@ -86,8 +98,9 @@ options.add_argument("--disable-dev-shm-usage")
 
 driver = webdriver.Chrome(options=options)
 
-# Navigate directly to KBS 1FM using its channel code
-driver.get("https://onair.kbs.co.kr/index.html?sname=onair&stype=live&ch_code=24&group_code=60&ch_type=localList")
+# Navigate to the specified URL
+print(f"Navigating to: {args.url}")
+driver.get(args.url)
 
 try:
     # Wait for JWPlayer to initialize and extract stream URL
@@ -102,7 +115,7 @@ try:
     # Generate filename with current datetime
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_file = os.path.join(recordings_dir, f"kbs_1fm_{current_time}.mp3")
-    duration_seconds = 3600  # Define the duration
+    duration_seconds = args.duration  # Get duration from command line argument
     print(f"Starting recording to {output_file} for {duration_seconds/3600:.1f} hours...")
 
     ffmpeg_cmd = [
@@ -115,9 +128,12 @@ try:
     ]
     subprocess.run(ffmpeg_cmd)
     
-    # Upload the recorded file to Google Drive
-    print("Uploading recording to Google Drive...")
-    upload_to_drive(output_file)
+    # Upload the recorded file to Google Drive only if --upload flag is set
+    if args.upload:
+        print("Uploading recording to Google Drive...")
+        upload_to_drive(output_file)
+    else:
+        print("Google Drive upload is disabled. Recording saved locally only.")
 
 except Exception as e:
     print("Error occurred:", e)

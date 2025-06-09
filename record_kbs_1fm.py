@@ -87,7 +87,7 @@ options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome(options=options)
 
 # Navigate directly to KBS 1FM using its channel code
-driver.get("https://onair.kbs.co.kr/index.html?sname=onair&stype=live&ch_code=24")
+driver.get("https://onair.kbs.co.kr/index.html?sname=onair&stype=live&ch_code=24&group_code=60&ch_type=localList")
 
 try:
     # Wait for JWPlayer to initialize and extract stream URL
@@ -102,14 +102,15 @@ try:
     # Generate filename with current datetime
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_file = os.path.join(recordings_dir, f"kbs_1fm_{current_time}.mp3")
-    print(f"Starting recording to {output_file} for 2 hours...")
+    duration_seconds = 3600  # Define the duration
+    print(f"Starting recording to {output_file} for {duration_seconds/3600:.1f} hours...")
 
     ffmpeg_cmd = [
         "ffmpeg",
         "-i", stream_url,
         "-c:a", "libmp3lame",
         "-q:a", "2",  # High quality MP3 (VBR)
-        "-t", "60",
+        "-t", str(duration_seconds),
         output_file
     ]
     subprocess.run(ffmpeg_cmd)

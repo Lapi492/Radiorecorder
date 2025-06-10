@@ -122,8 +122,10 @@ try:
         "ffmpeg",
         "-loglevel", "warning",  # Reduce output verbosity
         "-i", stream_url,
+        "-ac", "1",         # Mono
+        "-ar", "32000",     # 32kHz sample rate
         "-c:a", "libmp3lame",
-        "-q:a", "4",  # High quality MP3 (VBR)
+        "-q:a", "4",
         "-t", str(duration_seconds),
         output_file
     ]

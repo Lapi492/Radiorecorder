@@ -101,7 +101,7 @@ parser.add_argument('--url', type=str,
                    default='https://onair.kbs.co.kr/index.html?sname=onair&stype=live&ch_code=24&ch_type=radioList&bora=off&chat=off',
                    help='URL of the stream (default: KBS 1FM)')
 parser.add_argument('--upload', action='store_true',
-                   help='Enable upload to Google Drive. To use this, you need to set up Google Drive API first. (default: False)')
+                   help='Enable upload to Google Drive and automatically delete local file. To use this, you need to set up Google Drive API first. (default: False)')
 args = parser.parse_args()
 
 # Setup Selenium for headless Chrome on macOS

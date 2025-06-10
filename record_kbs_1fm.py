@@ -74,6 +74,21 @@ def upload_to_drive(file_path, folder_id=None):
         print(f"An error occurred while uploading to Google Drive: {e}")
         return None
 
+def delete_local_file(file_path):
+    """Deletes a local file.
+    Args:
+        file_path: Path to the file to delete
+    Returns:
+        bool: True if deletion was successful, False otherwise
+    """
+    try:
+        os.remove(file_path)
+        print(f"Successfully deleted local file: {file_path}")
+        return True
+    except Exception as e:
+        print(f"Error deleting local file {file_path}: {e}")
+        return False
+
 # Create recordings directory if it doesn't exist
 recordings_dir = "recordings"
 os.makedirs(recordings_dir, exist_ok=True)
@@ -134,7 +149,10 @@ try:
     # Upload the recorded file to Google Drive only if --upload flag is set
     if args.upload:
         print("Uploading recording to Google Drive...")
-        upload_to_drive(output_file)
+        file_id = upload_to_drive(output_file)
+        if file_id:
+            print("Upload successful, deleting local file...")
+            delete_local_file(output_file)
     else:
         print("Google Drive upload is disabled. Recording saved locally only.")
 

@@ -120,9 +120,10 @@ try:
 
     ffmpeg_cmd = [
         "ffmpeg",
+        "-loglevel", "warning",  # Reduce output verbosity
         "-i", stream_url,
         "-c:a", "libmp3lame",
-        "-q:a", "2",  # High quality MP3 (VBR)
+        "-q:a", "4",  # High quality MP3 (VBR)
         "-t", str(duration_seconds),
         output_file
     ]

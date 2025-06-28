@@ -102,6 +102,8 @@ parser.add_argument('--url', type=str,
                    help='URL of the stream (default: KBS 1FM)')
 parser.add_argument('--upload', action='store_true',
                    help='Enable upload to Google Drive and automatically delete local file. To use this, you need to set up Google Drive API first. (default: False)')
+parser.add_argument('--ffmpeg', type=str, default='ffmpeg')
+
 args = parser.parse_args()
 
 # Setup Selenium for headless Chrome on macOS
@@ -134,7 +136,7 @@ try:
     print(f"Starting recording to {output_file} for {duration_seconds/3600:.1f} hours...")
 
     ffmpeg_cmd = [
-        "ffmpeg",
+        f'{args.ffmpeg}'
         "-loglevel", "warning",  # Reduce output verbosity
         "-i", stream_url,
         "-ac", "1",         # Mono

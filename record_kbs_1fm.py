@@ -135,8 +135,9 @@ try:
     duration_seconds = args.duration  # Get duration from command line argument
     print(f"Starting recording to {output_file} for {duration_seconds/3600:.1f} hours...")
 
+    ffmpeg_bin_path = os.path.abspath(os.path.expanduser(args.ffmpeg))
     ffmpeg_cmd = [
-        f'{args.ffmpeg}'
+        f'{ffmpeg_bin_path}',
         "-loglevel", "warning",  # Reduce output verbosity
         "-i", stream_url,
         "-ac", "1",         # Mono

@@ -136,7 +136,7 @@ try:
     print(f"Starting recording to {output_file} for {duration_seconds/3600:.1f} hours...")
 
     ffmpeg_cmd = [
-        f'{args.ffmpeg}'
+        f'{args.ffmpeg}',
         "-loglevel", "warning",  # Reduce output verbosity
         "-i", stream_url,
         "-ac", "1",         # Mono
